@@ -37,20 +37,24 @@ var step;
         
         var hour = clockTime.hour;
         //12-hour support
-        if (hour >= 12)
+        if (hour > 12 || hour == 0)
         {
 	        var deviceSettings = Sys.getDeviceSettings();
 	        
 	        if (!deviceSettings.is24Hour) {
-	        	if (hour == 12) {
-	        		hour = 1;
+	        	if (hour == 0) {
+	        		hour = 12;
 	        	}
 	        	else {
 	        		hour = hour - 12;
 	        	}
 	        }
         }
-        var timeString = Lang.format("$1$:$2$", [hour, clockTime.min.format("%.2d")]);
+        var minute = clockTime.min.toString();
+        if (minute.toNumber() < 10) {
+        	minute = "0" + minute;
+        }
+        var timeString = Lang.format("$1$:$2$", [hour, minute]);
         
         dc.setColor(Gfx.COLOR_DK_BLUE, Gfx.COLOR_TRANSPARENT);
         //Vivoactive 205 x 148 
@@ -61,20 +65,15 @@ var step;
         if(isSleep == 0){ 
 	    	var stats = Sys.getSystemStats();
 	      	var battery = stats.battery;
-	      	//Change color depending on charge	
-	      	if (battery >= 50){
-	      		dc.setColor(Gfx.COLOR_GREEN, Gfx.COLOR_TRANSPARENT);
-	  		}
-	      	else if ( (battery >= 25) && (battery < 50)){
-	      		dc.setColor(Gfx.COLOR_YELLOW, Gfx.COLOR_TRANSPARENT);
-	      	}else{
-	      		dc.setColor(Gfx.COLOR_RED, Gfx.COLOR_TRANSPARENT);
-	  		}
+	    
+	  		dc.setColor(Gfx.COLOR_DK_BLUE, Gfx.COLOR_TRANSPARENT);
 	  		//Large Battery Rectangle
+
 	  		dc.drawRectangle((screenX-90), 10,80,29);
 	  		//Positive battery Terminal
 	  		dc.drawRectangle((screenX-11), 20,5,10);
 	  		//Battery %
+			
 	        dc.drawText((screenX-50), 10, Gfx.FONT_MEDIUM, battery.format("%4.2f") + "%", Gfx.TEXT_JUSTIFY_CENTER);
     	}
     	else {
@@ -90,7 +89,7 @@ var step;
 		dc.drawBitmap(5,screenY-20,step);
 		
 		var activity = Act.getInfo();
-		if(updateCount == 2) { //When update count is 2 (every 2 minutes or 2 seconds when awake) switch values
+		if(updateCount == 2 && isSleep == 0) { //When update count is 2 (every 2 minutes or 2 seconds when awake) switch values
 			dc.drawText(30, screenY-25, Gfx.FONT_MEDIUM, activity.steps.toString(), Gfx.TEXT_JUSTIFY_LEFT);
 			updateCount = 0;
 		}
