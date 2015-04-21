@@ -1,0 +1,9 @@
+<resources>
+    <string id="AppName">ConnectIQ-DodgersWatch</string>
+
+    <bitmaps>
+		<bitmap id="LauncherIcon" filename="images/launcher_icon.png" />
+		<bitmap id="DodgerLogo" filename="images/dodgers.png" />
+		<bitmap id="id_step" filename="images/footprints.png" />
+    </bitmaps>
+</resources>
